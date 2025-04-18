@@ -1,0 +1,189 @@
+ Basic Feature List for the JD Skill Extractor App
+Each feature is broken into:
+
+📌 Feature Description
+
+🔧 Libraries/Tools
+
+🔁 Workflow (Step-by-Step)
+
+🧱 Architecture Principles Followed
+
+🔹 Feature 1: Paste or Upload Job Description Text
+📌 What it does:
+Allows user to input a job description via:
+
+Text area (manual paste)
+
+File upload (optional)
+
+🔧 Tools:
+Streamlit for front-end
+
+Python backend
+
+File parsing with PyPDF2 or python-docx (if needed)
+
+🔁 Workflow:
+User opens the app
+
+Inputs JD using:
+
+st.text_area() for pasting
+
+st.file_uploader() for uploading
+
+Backend reads the text into a string for processing
+
+🧱 Architecture Principles:
+User-friendly interface
+
+Modular input handling (text and file support)
+
+🔹 Feature 2: Preprocess Job Description Text
+📌 What it does:
+Cleans the text for accurate skill extraction
+
+🔧 Libraries:
+spaCy or nltk
+
+re (regex)
+
+🔁 Workflow:
+Convert text to lowercase
+
+Remove special characters and numbers
+
+Tokenize sentences/words
+
+Remove stopwords (like “and”, “the”, “with”)
+
+Optional: Lemmatization (turns "running" → "run")
+
+python
+Copy
+Edit
+import spacy
+nlp = spacy.load("en_core_web_sm")
+doc = nlp(text)
+cleaned_tokens = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct]
+🧱 Architecture Principles:
+Clean layer separation: Preprocessing is a service module
+
+Reusable pipeline components
+
+🔹 Feature 3: Extract Key Technical Skills and Tools
+📌 What it does:
+Detects important tech skills like Python, SQL, Excel, etc.
+
+🔧 Tools:
+Skill list: Custom CSV or use O*NET skills data
+
+Matching: fuzzywuzzy or simple in logic
+
+NLP: spaCy for named entity recognition (NER)
+
+🔁 Workflow:
+Load curated skill dictionary (CSV of known skills)
+
+Match skills in JD using:
+
+Keyword matching
+
+OR entity extraction (NER) via spaCy
+
+python
+Copy
+Edit
+from fuzzywuzzy import fuzz
+# Match "Pyton" with "Python" using ratio > threshold
+🧱 Architecture Principles:
+Decouples matching logic from UI
+
+Future extensibility (e.g., use ML/NLP later)
+
+🔹 Feature 4: Categorize Extracted Skills
+📌 What it does:
+Groups skills into categories like:
+
+Programming Languages
+
+Cloud Platforms
+
+Soft Skills
+
+Tools
+
+🔧 Tools:
+Simple mapping JSON
+
+Optional: Pre-trained classifier (later)
+
+🔁 Workflow:
+Use a predefined skill-category map
+
+Loop through extracted skills and assign categories
+
+Display result as structured output
+
+python
+Copy
+Edit
+{
+  "Python": "Programming",
+  "Excel": "Tool",
+  "AWS": "Cloud",
+  "Communication": "Soft Skill"
+}
+🧱 Architecture Principles:
+Uses a configuration layer (JSON/CSV)
+
+Improves explainability and modularity
+
+🔹 Feature 5: Display Results Clearly
+📌 What it does:
+Shows extracted & grouped skills visually.
+
+🔧 Tools:
+Streamlit for UI
+
+Plotly or Altair for simple visualizations
+
+🔁 Workflow:
+Format skills as a list or chips
+
+Use different colors for skill types
+
+Optional: Bar chart showing frequency/count
+
+python
+Copy
+Edit
+import streamlit as st
+st.markdown("**Required Tools:** Python, SQL, Tableau")
+🧱 Architecture Principles:
+UI is clean, readable, responsive
+
+Separation of concerns between display logic and processing logic
+
+🔹 Feature 6 (Bonus): Resume Matching
+📌 What it does:
+Matches user’s resume skills with the JD and shows skill gaps
+
+🔧 Tools:
+docx/PDF parser
+
+Same skill matcher as used for JD
+
+🔁 Workflow:
+Upload resume (optional)
+
+Extract resume skills
+
+Compare to JD skills → show overlap + gaps
+
+🧱 Architecture Principles:
+Extensible microservice-style component
+
+Adds user personalization for future use
+
